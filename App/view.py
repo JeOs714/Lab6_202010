@@ -41,7 +41,7 @@ operación solicitada
 def printMenu():
     print("Bienvenido al Laboratorio 6")
     print("1- Cargar información")
-    print("2- Buscar libro por llave (titulo) ")
+    print("2- Requerimiento 3")
     print("3- Consultar cuantos libros hay alfabeticamente menores a una llave (titulo) - (rank)")
     print("4- Buscar un libro por posición de la llave (titulo) - (select)")
     print("5- Consultar la cantidad de libros por rating para un año dado")
@@ -81,13 +81,21 @@ def main():
             print ('Tamaño árbol Libros por año : ' + str(map.size(catalog['yearsTree'])))
             print ('Altura árbol por titulo: ' + str(map.height(catalog['booksTitleTree'])))
             print ('Altura árbol por año: ' + str(map.height(catalog['yearsTree'])))
+            print ('Arbol Accidentes cargados: ' + str(map.size(catalog['AccidentsTree'])))
+            print ('Lista Accidentes cargados: ' + str(lt.size(catalog['AccidentsList'])))
+            print ('Altura arbol: ' + str(map.height(catalog['AccidentsTree'])))
+               
+            
         elif int(inputs[0])==2:
-            title = input("Nombre del titulo a buscar: ")
-            book = controller.getBookTree(catalog,title)
-            if book:
-                print("Libro encontrado:",book['title'],book['average_rating'])
+            print("Para ingresar la fecha, el formato de la misma debe ser: Año-Mes-Día." +"\n"
+            +"Por ejemplo, si desea buscar el 2 de Agosto de 2016, la entrada sería: 2016-02-08")
+            date1= input("Ingrese la fecha inicio para la cual desea buscar: ")
+            date2= input("Ingrese la fecha inicio para la cual desea buscar: ")
+            res = controller.getRankAccidents(date1, date2, catalog)
+            if res:
+                print(res)
             else:
-                print("Libro No encontrado")
+                print("No se encontraron accidentes para la fecha ",date)
         elif int(inputs[0])==3:
             title = input("Nombre del titulo a buscar (rank): ")
             rank = controller.rankBookTree(catalog,title) 

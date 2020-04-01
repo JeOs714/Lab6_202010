@@ -76,6 +76,26 @@ def loadBooks (catalog, sep=','):
     t1_stop = process_time() #tiempo final
     print("Tiempo de ejecución carga libros:",t1_stop-t1_start," segundos")   
 
+def loadAccidents (catalog, sep=','):
+    """
+    Carga los libros del archivo.  Por cada libro se toman sus autores y por 
+    cada uno de ellos, se crea un arbol de autores, a dicho autor y una
+    referencia al libro que se esta procesando.
+    """
+    t1_start = process_time() #tiempo inicial
+    accidentsfile = cf.data_dir + 'UsAccidents/us_accidents_small.csv'
+    dialect = csv.excel()
+    dialect.delimiter=sep
+    with open(accidentsfile, encoding="utf-8-sig") as csvfile:
+        spamreader = csv.DictReader(csvfile, dialect=dialect)
+        for row in spamreader: 
+            # Se adiciona el libro a la lista de libros
+            model.addAccidentList(catalog, row)
+            # Se adiciona el libro al mapa de libros (key=title)
+            model.addAccidentDate(catalog, row)
+    t1_stop = process_time() #tiempo final
+    print("Tiempo de ejecución carga libros:",t1_stop-t1_start," segundos")
+
 
 
 def initCatalog ():
@@ -93,6 +113,7 @@ def loadData (catalog):
     estructura de datos
     """
     loadBooks(catalog)    
+    loadAccidents(catalog)
 
 # Funciones llamadas desde la vista y enviadas al modelo
 
@@ -134,5 +155,12 @@ def getBooksCountByYearRange (catalog, years):
     counter = model.getBooksCountByYearRange(catalog, years)
     t1_stop = process_time() #tiempo final
     print("Tiempo de ejecución consultar libros por rango de años:",t1_stop-t1_start," segundos")   
+    return counter
+
+def getRankAccidents(date1, date2, catalog):
+    t1_start = process_time() #tiempo inicial
+    counter = model.getRankAccidents(date1, date2, catalog)
+    t1_stop = process_time() #tiempo final
+    print("Tiempo de ejecución consultar accidentes por rango de fechas:",t1_stop-t1_start," segundos")   
     return counter
 

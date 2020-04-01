@@ -45,6 +45,8 @@ def newCatalog():
     catalog['booksTitleTree'] = tree.newMap ()
     catalog['yearsTree'] = tree.newMap ()
     catalog['booksList'] = lt.newList("ARRAY_LIST")
+    catalog['AccidentsTree'] = tree.newMap ()
+    catalog['AccidentsList'] = lt.newList("ARRAY_LIST")
     return catalog
 
 
@@ -54,6 +56,68 @@ def newBook (row):
     """
     book = {"book_id": row['book_id'], "title":row['title'], "average_rating":row['average_rating'], "ratings_count":row['ratings_count']}
     return book
+
+def newAccident (row):
+    """
+    Crea una nueva estructura para almacenar un libro 
+    """
+    accident = {"id": row['ID'], "Time": {}, "Country":row['Country']}
+    accident["Time"]["DateI"]= row['Start_Time'].split(" ")[0]
+    accident["Time"]["DateF"]= row['End_Time'].split(" ")[0]
+    accident["Time"]["HourI"]= row['Start_Time'].split(" ")[1]
+    accident["Time"]["HourF"]= row['End_Time'].split(" ")[1]
+    accident["Time"]["DateHI"]= lt.newList("ARRAY_LIST")
+    accident["Time"]["DateHF"]= lt.newList("ARRAY_LIST")
+    return accident
+
+def newAccidentDate(catalog, row):
+    accident = {"id": None, "Date": row["Start_Time"].split(" ")[0], "City": None}
+    accident["id"]= lt.newList("ARRAY_LIST")
+    accident["City"]= map.newMap()
+    map.put(accident["City"], row["City"], 1, compareByKey)
+    lt.addLast(accident['id'],row['ID'])
+
+    return accident 
+def addAccidentList (catalog, row):
+    """
+    Adiciona libro a la lista
+    """
+    accidents = catalog['AccidentsList']
+    accident = newAccident(row)
+    lt.addLast(accidents, accident)
+
+def addAccidentDate (catalog, row):
+    """
+    Adiciona libro al map con key=title
+    """
+    #catalog['booksTree'] = map.put(catalog['booksTree'], int(book['book_id']), book, greater)
+    Accidents= catalog['AccidentsTree']
+    Exist=tree.get(Accidents,row["Start_Time"].split(" ")[0], greater)
+    if Exist:
+        lt.addLast(Exist['id'],row['ID'])
+        Contador= row["City"]
+        Nuevovalor= map.get(Exist["City"], Contador, compareByKey)
+        if Nuevovalor:
+            Nuevovalor+=1
+            map.put(Exist["City"], Contador, Nuevovalor, compareByKey)
+        else:
+            map.put(Exist["City"], Contador, 1, compareByKey)
+        tree.put(catalog['AccidentsTree'],row["Start_Time"].split(" ")[0],Exist, greater)    
+        #director['sum_average_rating'] += float(row['vote_average'])
+    else:
+        Accident= newAccidentDate(catalog, row)
+        catalog['AccidentsTree']  = tree.put(Accidents , Accident["Date"], Accident, greater)
+        #tree.put(Accidents, Accident['Date'], Accident, greater)
+
+def addAccidentMap1 (catalog, row):
+    """
+    Adiciona libro al map con key=title
+    """
+    accident= newAccident(row)
+    #catalog['booksTree'] = map.put(catalog['booksTree'], int(book['book_id']), book, greater)
+    catalog['AccidentsTree']  = tree.put(catalog['AccidentsTree'] , accident['Time']["DateHI"] , accident, greater)
+
+
 
 def addBookList (catalog, row):
     """
@@ -156,6 +220,24 @@ def getBooksCountByYearRange (catalog, years):
             #print(yearElement['year'],yearElement['count'])
             counter += yearElement['count']
         return counter
+    return None
+
+def getRankAccidents(date1, date2, catalog):
+    Años= tree.valueRange(catalog['AccidentsTree'], date1, date2, greater)
+    res=""
+    contador= 0
+    if Años:
+        for Año in Años["elements"]:
+            print(Año)
+            Severidades= map.keySet(Año["City"])
+            iterator=it.newIterator(Severidades)
+            contador+= lt.size(Año["id"])
+            res+= "El total de accidentes la fecha " + str(Año["Date"]) + " fue "+ str(lt.size(Año["id"]))+ "\n"
+            while it.hasNext(iterator):
+                SevKey = it.next(iterator)
+                res += 'Ciudad '+str(SevKey) + ' : ' + str(map.get(Año["City"],SevKey,compareByKey)) + '\n'
+        res+= "El total de accidentes entre las fechas " + str(date1) + " y " + str(date2)+ " fue "+ str(contador)+ "\n"
+        return res
     return None
 
 
