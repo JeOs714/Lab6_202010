@@ -14,10 +14,16 @@ class RBTreeTest (unittest.TestCase):
 
 
     def tearDown (self):
+    
         pass
 
-
-    
+    def greater (self, key1, key2):
+        if ( key1 == key2):
+            return 0
+        elif (key1 < key2):
+            return -1
+        else:
+            return 1
 
     def comparekeys (self, key1, key2):
         if ( key1 == key2):
@@ -115,6 +121,21 @@ class RBTreeTest (unittest.TestCase):
         tree = omap.put (tree, 'S', 'Title 10', self.comparekeys)
         tree = omap.put (tree, 'X', 'Title 40', self.comparekeys)
         kList = omap.keys (tree, 'R', 'X', self.comparekeys) 
+        print("\nRBT keys between R and X")
+        print (kList)
+    def test_valueRange(self):
+        tree= omap.newMap()
+        tree = omap.put (tree, 'A', 'Title 50', self.comparekeys)
+        tree = omap.put (tree, 'C', 'Title 70', self.comparekeys)
+        tree = omap.put (tree, 'E', 'Title 30', self.comparekeys)
+        tree = omap.put (tree, 'H', 'Title 80', self.comparekeys)        
+        tree = omap.put (tree, 'L', 'Title 90', self.comparekeys)
+        tree = omap.put (tree, 'M', 'Title 20', self.comparekeys)
+        tree = omap.put (tree, 'P', 'Title 50', self.comparekeys)
+        tree = omap.put (tree, 'R', 'Title 60', self.comparekeys)
+        tree = omap.put (tree, 'S', 'Title 10', self.comparekeys)
+        tree = omap.put (tree, 'X', 'Title 40', self.comparekeys)
+        kList = (omap.valueRange(tree, "A", "R", self.greater))
         print("\nRBT keys between R and X")
         print (kList)
 
