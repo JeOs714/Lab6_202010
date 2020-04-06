@@ -42,9 +42,6 @@ def newCatalog():
     """
     catalog = {'booksTitleTree':None,'yearsTree':None,'booksList':None}
     #implementación de Black-Red Tree (brt) por default
-    catalog['booksTitleTree'] = tree.newMap ()
-    catalog['yearsTree'] = tree.newMap ()
-    catalog['booksList'] = lt.newList("ARRAY_LIST")
     catalog['AccidentsTree'] = tree.newMap ()
     catalog['AccidentsList'] = lt.newList("ARRAY_LIST")
     return catalog
@@ -71,10 +68,14 @@ def newAccident (row):
     return accident
 
 def newAccidentDate(catalog, row):
-    accident = {"id": None, "Date": row["Start_Time"].split(" ")[0], "City": None}
+    accident = {"id": None, "Date": row["Start_Time"].split(" ")[0], "City": None, "State": None, "Severity": None}
     accident["id"]= lt.newList("ARRAY_LIST")
     accident["City"]= map.newMap()
     map.put(accident["City"], row["City"], 1, compareByKey)
+    accident["State"]= map.newMap(29)
+    map.put(accident["State"], row["State"], 1, compareByKey)
+    accident["Severity"]= map.newMap(2)
+    map.put(accident["Severity"], row["Severity"], 1, compareByKey)
     lt.addLast(accident['id'],row['ID'])
 
     return accident 
@@ -104,6 +105,21 @@ def addAccidentDate (catalog, row):
             map.put(Exist["City"], Contador, 1, compareByKey)
         tree.put(catalog['AccidentsTree'],row["Start_Time"].split(" ")[0],Exist, greater)    
         #director['sum_average_rating'] += float(row['vote_average'])
+        Contador= row["Severity"]
+        Nuevovalor= map.get(Exist["Severity"], Contador, compareByKey)
+        if Nuevovalor:
+            Nuevovalor+=1
+            map.put(Exist["Severity"], Contador, Nuevovalor, compareByKey)
+        else:
+            map.put(Exist["Severity"], Contador, 1, compareByKey)
+        tree.put(catalog['AccidentsTree'],row["Start_Time"].split(" ")[0],Exist, greater) 
+        Contador= row["State"]
+        Nuevovalor= map.get(Exist["State"], Contador, compareByKey)
+        if Nuevovalor:
+            Nuevovalor+=1
+            map.put(Exist["State"], Contador, Nuevovalor, compareByKey)
+        else:
+            map.put(Exist["State"], Contador, 1, compareByKey)
     else:
         Accident= newAccidentDate(catalog, row)
         catalog['AccidentsTree']  = tree.put(Accidents , Accident["Date"], Accident, greater)
@@ -222,13 +238,45 @@ def getBooksCountByYearRange (catalog, years):
         return counter
     return None
 
+def getAccidentBeforeDate(date, catalog):
+
+    Años= tree.valueRange(catalog['AccidentsTree'], "0", date, greater)
+    contador= 0
+    if Años:
+        for Año in Años["elements"]:
+            contador+= lt.size(Año["id"])
+    return contador 
+
+
+def getAccidentsByState(date, catalog):
+    Año= tree.get(catalog["AccidentsTree"], date, greater)
+    res=""
+
+    if Año:
+        Severidades= map.keySet(Año["State"])
+        iterator=it.newIterator(Severidades)
+        res+= "El total de accidentes la fecha " + str(date) + " fue "+ str(lt.size(Año["id"]))+ "\n"
+        dit={"Mayor":"", "Cantidad":0}
+        while it.hasNext(iterator):
+            SevKey = it.next(iterator)
+            Valor= map.get(Año["State"],SevKey,compareByKey)
+            res+="Estado "+str(SevKey) + ' : ' + str(Valor) + '\n'
+            
+            if Valor> dit["Cantidad"]:
+                dit["Cantidad"]=Valor
+                dit["Mayor"]=SevKey
+
+        res+= dit["Mayor"]+ " es el Estado con mayor accidentalidad con "+ str(dit["Cantidad"]) + " de accidentes resportados."
+        return res
+    return None
+
 def getRankAccidents(date1, date2, catalog):
+    #Se podría crear un diccionario al cual se le adicionen las ciudades y se le vayan sumando los valores. 
     Años= tree.valueRange(catalog['AccidentsTree'], date1, date2, greater)
     res=""
     contador= 0
     if Años:
         for Año in Años["elements"]:
-            print(Año)
             Severidades= map.keySet(Año["City"])
             iterator=it.newIterator(Severidades)
             contador+= lt.size(Año["id"])
@@ -240,6 +288,36 @@ def getRankAccidents(date1, date2, catalog):
         return res
     return None
 
+def getSeverityByDate(catalog, date):
+    Año= tree.get(catalog["AccidentsTree"], date, greater)
+    res=""
+    if Año:
+        Severidades= map.keySet(Año["Severity"])
+        iterator=it.newIterator(Severidades)
+        res+= "El total de accidentes la fecha " + str(date) + " fue "+ str(lt.size(Año["id"]))+ "\n"
+        while it.hasNext(iterator):
+            SevKey = it.next(iterator)
+            res += 'Severidad '+str(SevKey) + ' : ' + str(map.get(Año["Severity"],SevKey,compareByKey)) + '\n'
+        return res
+    return None
+
+def getRankAccidents(date1, date2, catalog):
+    #Se podría crear un diccionario al cual se le adicionen las ciudades y se le vayan sumando los valores. 
+    Años= tree.valueRange(catalog['AccidentsTree'], date1, date2, greater)
+    res=""
+    contador= 0
+    if Años:
+        for Año in Años["elements"]:
+            Severidades= map.keySet(Año["City"])
+            iterator=it.newIterator(Severidades)
+            contador+= lt.size(Año["id"])
+            res+= "El total de accidentes la fecha " + str(Año["Date"]) + " fue "+ str(lt.size(Año["id"]))+ "\n"
+            while it.hasNext(iterator):
+                SevKey = it.next(iterator)
+                res += 'Ciudad '+str(SevKey) + ' : ' + str(map.get(Año["City"],SevKey,compareByKey)) + '\n'
+        res+= "El total de accidentes entre las fechas " + str(date1) + " y " + str(date2)+ " fue "+ str(contador)+ "\n"
+        return res
+    return None
 
 
 # Funciones de comparacion

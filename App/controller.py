@@ -83,7 +83,7 @@ def loadAccidents (catalog, sep=','):
     referencia al libro que se esta procesando.
     """
     t1_start = process_time() #tiempo inicial
-    accidentsfile = cf.data_dir + 'UsAccidents/us_accidents_small.csv'
+    accidentsfile = cf.data_dir + 'UsAccidents/Us_Accidents_Dec19.csv'
     dialect = csv.excel()
     dialect.delimiter=sep
     with open(accidentsfile, encoding="utf-8-sig") as csvfile:
@@ -111,8 +111,7 @@ def loadData (catalog):
     """
     Carga los datos de los archivos y cargar los datos en la
     estructura de datos
-    """
-    loadBooks(catalog)    
+    """  
     loadAccidents(catalog)
 
 # Funciones llamadas desde la vista y enviadas al modelo
@@ -157,10 +156,31 @@ def getBooksCountByYearRange (catalog, years):
     print("Tiempo de ejecución consultar libros por rango de años:",t1_stop-t1_start," segundos")   
     return counter
 
+def getAccidentBeforeDate(date, catalog):
+    t1_start=process_time() #tiempo inicial
+    res= model.getAccidentBeforeDate(date, catalog)
+    t1_stop=process_time() #tiempo final
+    print("Tiempo de ejecución consultar libros por rango de años:",t1_stop-t1_start," segundos")  
+    if res:
+        return res
+    else:
+        return None
 def getRankAccidents(date1, date2, catalog):
     t1_start = process_time() #tiempo inicial
     counter = model.getRankAccidents(date1, date2, catalog)
     t1_stop = process_time() #tiempo final
     print("Tiempo de ejecución consultar accidentes por rango de fechas:",t1_stop-t1_start," segundos")   
     return counter
+def getSeverityByDate(catalog, date):
+    t1_start = process_time() #tiempo inicial
+    resp = model.getSeverityByDate(catalog, date)
+    t1_stop = process_time() #tiempo final
+    print("Tiempo de ejecución consultar libros por año:",t1_stop-t1_start," segundos")   
+    return resp
+def getAccidentsByState(catalog, date):
+    t1_start = process_time() #tiempo inicial
+    resp = model.getAccidentsByState(catalog, date)
+    t1_stop = process_time() #tiempo final
+    print("Tiempo de ejecución consultar libros por año:",t1_stop-t1_start," segundos")   
+    return resp
 

@@ -39,13 +39,12 @@ operación solicitada
 
 
 def printMenu():
-    print("Bienvenido al Laboratorio 6")
+    print("Bienvenido al Reto 3")
     print("1- Cargar información")
-    print("2- Requerimiento 3")
-    print("3- Consultar cuantos libros hay alfabeticamente menores a una llave (titulo) - (rank)")
-    print("4- Buscar un libro por posición de la llave (titulo) - (select)")
-    print("5- Consultar la cantidad de libros por rating para un año dado")
-    print("6- Consultar la cantidad de libros por rating para un rango de años")
+    print("2- Requerimiento 1")
+    print("3- Requerimiento 2")
+    print("4- Requerimiento 3")
+    print("5- Requerimiento 4")
 
     print("0- Salir")
 
@@ -76,17 +75,12 @@ def main():
             print("Recursion Limit:",sys.getrecursionlimit())
             catalog = initCatalog ()
             loadData (catalog)
-            print ('Tamaño Lista libros cargados: ' + str(lt.size(catalog['booksList'])))
-            print ('Tamaño árbol Libros por titulo: ' + str(map.size(catalog['booksTitleTree'])))
-            print ('Tamaño árbol Libros por año : ' + str(map.size(catalog['yearsTree'])))
-            print ('Altura árbol por titulo: ' + str(map.height(catalog['booksTitleTree'])))
-            print ('Altura árbol por año: ' + str(map.height(catalog['yearsTree'])))
             print ('Arbol Accidentes cargados: ' + str(map.size(catalog['AccidentsTree'])))
             print ('Lista Accidentes cargados: ' + str(lt.size(catalog['AccidentsList'])))
             print ('Altura arbol: ' + str(map.height(catalog['AccidentsTree'])))
                
             
-        elif int(inputs[0])==2:
+        elif int(inputs[0])==4:
             print("Para ingresar la fecha, el formato de la misma debe ser: Año-Mes-Día." +"\n"
             +"Por ejemplo, si desea buscar el 2 de Agosto de 2016, la entrada sería: 2016-02-08")
             date1= input("Ingrese la fecha inicio para la cual desea buscar: ")
@@ -95,25 +89,35 @@ def main():
             if res:
                 print(res)
             else:
-                print("No se encontraron accidentes para la fecha ",date)
+                print("No se encontraron accidentes para las fechas ", date1, " - ", date2)
+        elif int(inputs[0])==2:
+            print("Para ingresar la fecha, el formato de la misma debe ser: Año-Mes-Día." +"\n"
+            +"Por ejemplo, si desea buscar el 2 de Agosto de 2016, la entrada sería: 2016-02-08")
+            date1= input("Ingrese la fecha para la cual desea buscar los accidentes anteriores: ")
+            res= controller.getAccidentBeforeDate(date1, catalog)
+            if res:
+                print("El número de accidentes anteriores a la fecha ingresada son", res)
+            else:
+                print("No se encontraron accidentes anteriores a la fecha ingresada") 
+
         elif int(inputs[0])==3:
-            title = input("Nombre del titulo a buscar (rank): ")
-            rank = controller.rankBookTree(catalog,title) 
-            print("Hay ",rank," titulos menores (rank) que "+title)
-        elif int(inputs[0])==4:
-            pos = int(input("Posición del k-esimo titulo del libro (select) a obtener: "))
-            book = controller.selectBookTree(catalog, pos)
-            if book:
-                print("Libro en posición:",pos,":",book['value']['title'],book['value']['average_rating'])
+            print("Para ingresar la fecha, el formato de la misma debe ser: Año-Mes-Día." +"\n"
+            +"Por ejemplo, si desea buscar el 2 de Agosto de 2016, la entrada sería: 2016-02-08")
+            date= input("Ingrese la fecha para la cual desea buscar las severidades: ")
+            res = controller.getSeverityByDate(catalog, date)
+            if res:
+                print(res)
             else:
-                print("Libro no encotrado en posicion: ",pos)
+                print("No se encontraron accidentes para la fecha ",date)
         elif int(inputs[0])==5:
-            year = input("Ingrese el año a consultar:")
-            response = controller.getBookByYearRating(catalog, year) 
-            if response: 
-                print(response)
+            print("Para ingresar la fecha, el formato de la misma debe ser: Año-Mes-Día." +"\n"
+            +"Por ejemplo, si desea buscar el 2 de Agosto de 2016, la entrada sería: 2016-02-08")
+            date= input("Ingrese la fecha para la cual desea buscar las severidades: ")
+            res = controller.getAccidentsByState(catalog, date)
+            if res:
+                print(res)
             else:
-                print("No se encontraron libros para el año",year)
+                print("No se encontraron accidentes para la fecha ",date)
         elif int(inputs[0])==6:
             years = input("Ingrese los años desde y hasta (YYYY YYYY):")
             counter = controller.getBooksCountByYearRange(catalog, years) 
