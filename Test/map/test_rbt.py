@@ -138,6 +138,58 @@ class RBTreeTest (unittest.TestCase):
         kList = (omap.valueRange(tree, "A", "R", self.greater))
         print("\nRBT keys between R and X")
         print (kList)
+    def test_rank(self):
+        tree= omap.newMap()
+        tree = omap.put (tree, 'A', 'Title 50', self.comparekeys)
+        tree = omap.put (tree, 'C', 'Title 70', self.comparekeys)
+        tree = omap.put (tree, 'E', 'Title 30', self.comparekeys)
+        tree = omap.put (tree, 'H', 'Title 80', self.comparekeys)        
+        tree = omap.put (tree, 'L', 'Title 90', self.comparekeys)
+        tree = omap.put (tree, 'M', 'Title 20', self.comparekeys)
+        tree = omap.put (tree, 'P', 'Title 50', self.comparekeys)
+        tree = omap.put (tree, 'R', 'Title 60', self.comparekeys)
+        tree = omap.put (tree, 'S', 'Title 10', self.comparekeys)
+        tree = omap.put (tree, 'X', 'Title 40', self.comparekeys)
+        self.assertEqual(omap.rank(tree, "L", self.greater),4)
+
+    def test_minKey (self):
+        """
+        """
+        tree = omap.newMap ()
+      
+        tree = omap.put (tree, 'S', 'Title 50', self.comparekeys)
+        tree = omap.put (tree, 'E', 'Title 70', self.comparekeys)
+        tree = omap.put (tree, 'A', 'Title 30', self.comparekeys)
+        tree = omap.put (tree, 'R', 'Title 80', self.comparekeys)        
+        tree = omap.put (tree, 'C', 'Title 80', self.comparekeys)
+        tree = omap.put (tree, 'H', 'Title 30', self.comparekeys)
+        tree = omap.put (tree, 'X', 'Title 30', self.comparekeys)
+        tree = omap.put (tree, 'M', 'Title 80', self.comparekeys)
+        tree = omap.put (tree, 'P', 'Title 30', self.comparekeys)
+        tree = omap.put (tree, 'L', 'Title 30', self.comparekeys)
+        print("\nRBT datos aleatorios")
+        self.assertEqual(omap.min(tree)["key"],"A")
+
+    
+    def test_maxKey (self):
+        """
+        """
+        tree = omap.newMap ()
+      
+        tree = omap.put (tree, 'S', 'Title 50', self.comparekeys)
+        tree = omap.put (tree, 'E', 'Title 70', self.comparekeys)
+        tree = omap.put (tree, 'A', 'Title 30', self.comparekeys)
+        tree = omap.put (tree, 'R', 'Title 80', self.comparekeys)        
+        tree = omap.put (tree, 'C', 'Title 80', self.comparekeys)
+        tree = omap.put (tree, 'H', 'Title 30', self.comparekeys)
+        tree = omap.put (tree, 'X', 'Title 30', self.comparekeys)
+        tree = omap.put (tree, 'M', 'Title 80', self.comparekeys)
+        tree = omap.put (tree, 'P', 'Title 30', self.comparekeys)
+        tree = omap.put (tree, 'L', 'Title 30', self.comparekeys)
+        print("\nRBT datos aleatorios")
+        self.assertEqual(omap.max(tree)["key"],"X")
+
+
 
 
 
