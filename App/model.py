@@ -248,10 +248,9 @@ def getAccidentBeforeDate(date, catalog):
     return contador 
 
 
-def getAccidentsByState(date, catalog):
+def getAccidentsByState(catalog, date):
     Año= tree.get(catalog["AccidentsTree"], date, greater)
     res=""
-
     if Año:
         Severidades= map.keySet(Año["State"])
         iterator=it.newIterator(Severidades)
@@ -269,7 +268,7 @@ def getAccidentsByState(date, catalog):
         res+= dit["Mayor"]+ " es el Estado con mayor accidentalidad con "+ str(dit["Cantidad"]) + " de accidentes resportados."
         return res
     return None
-
+"""
 def getRankAccidents(date1, date2, catalog):
     #Se podría crear un diccionario al cual se le adicionen las ciudades y se le vayan sumando los valores. 
     Años= tree.valueRange(catalog['AccidentsTree'], date1, date2, greater)
@@ -287,7 +286,7 @@ def getRankAccidents(date1, date2, catalog):
         res+= "El total de accidentes entre las fechas " + str(date1) + " y " + str(date2)+ " fue "+ str(contador)+ "\n"
         return res
     return None
-
+"""
 def getSeverityByDate(catalog, date):
     Año= tree.get(catalog["AccidentsTree"], date, greater)
     res=""
@@ -306,18 +305,37 @@ def getRankAccidents(date1, date2, catalog):
     Años= tree.valueRange(catalog['AccidentsTree'], date1, date2, greater)
     res=""
     contador= 0
+    ciudades= map.newMap()
     if Años:
         for Año in Años["elements"]:
             Severidades= map.keySet(Año["City"])
             iterator=it.newIterator(Severidades)
             contador+= lt.size(Año["id"])
-            res+= "El total de accidentes la fecha " + str(Año["Date"]) + " fue "+ str(lt.size(Año["id"]))+ "\n"
             while it.hasNext(iterator):
                 SevKey = it.next(iterator)
-                res += 'Ciudad '+str(SevKey) + ' : ' + str(map.get(Año["City"],SevKey,compareByKey)) + '\n'
+                Valor = map.get(Año["City"],SevKey,compareByKey)
+                Está= map.get(ciudades, SevKey, compareByKey)
+                if Está:       
+                    Está+=Valor
+                    map.put(ciudades,SevKey, Está, compareByKey)
+                else:
+                    map.put(ciudades, SevKey, Valor, compareByKey)
         res+= "El total de accidentes entre las fechas " + str(date1) + " y " + str(date2)+ " fue "+ str(contador)+ "\n"
+        res+= HacerRespuesta(ciudades)
         return res
     return None
+
+def HacerRespuesta(Dic):
+    res=""
+    Severidades= map.keySet(Dic)
+    iterator=it.newIterator(Severidades)
+    while it.hasNext(iterator):
+        SevKey = it.next(iterator)
+        res += 'Ciudad '+ SevKey + ' : ' + str(map.get(Dic,SevKey,compareByKey) ) + '\n'
+    return res
+
+
+
 
 
 # Funciones de comparacion

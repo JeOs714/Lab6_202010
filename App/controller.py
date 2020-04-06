@@ -160,7 +160,7 @@ def getAccidentBeforeDate(date, catalog):
     t1_start=process_time() #tiempo inicial
     res= model.getAccidentBeforeDate(date, catalog)
     t1_stop=process_time() #tiempo final
-    print("Tiempo de ejecución consultar libros por rango de años:",t1_stop-t1_start," segundos")  
+    print("Tiempo de ejecución consultar accidentes anteriores a la fecha:",t1_stop-t1_start," segundos")  
     if res:
         return res
     else:
@@ -175,12 +175,12 @@ def getSeverityByDate(catalog, date):
     t1_start = process_time() #tiempo inicial
     resp = model.getSeverityByDate(catalog, date)
     t1_stop = process_time() #tiempo final
-    print("Tiempo de ejecución consultar libros por año:",t1_stop-t1_start," segundos")   
+    print("Tiempo de ejecución consultar la severidad por una fecha:",t1_stop-t1_start," segundos")   
     return resp
 def getAccidentsByState(catalog, date):
     t1_start = process_time() #tiempo inicial
     resp = model.getAccidentsByState(catalog, date)
     t1_stop = process_time() #tiempo final
-    print("Tiempo de ejecución consultar libros por año:",t1_stop-t1_start," segundos")   
+    print("Tiempo de ejecución consultar los estados por una fecha:",t1_stop-t1_start," segundos")   
     return resp
 

@@ -112,7 +112,7 @@ def main():
         elif int(inputs[0])==5:
             print("Para ingresar la fecha, el formato de la misma debe ser: Año-Mes-Día." +"\n"
             +"Por ejemplo, si desea buscar el 2 de Agosto de 2016, la entrada sería: 2016-02-08")
-            date= input("Ingrese la fecha para la cual desea buscar las severidades: ")
+            date= input("Ingrese la fecha para la cual desea buscar los estados: ")
             res = controller.getAccidentsByState(catalog, date)
             if res:
                 print(res)
